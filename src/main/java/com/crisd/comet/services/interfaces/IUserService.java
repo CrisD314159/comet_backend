@@ -11,13 +11,14 @@ import java.util.UUID;
 
 public interface IUserService {
 
-    public void SignUp(SignUpDTO signUpDTO) throws MessagingException, IOException;
-    public void UpdateUser(UpdateUserDTO updateUserDTO);
-    public void DeleteUser(UUID userId);
-    public GetUserOverviewDTO GetUserAccountOverview(UUID userId);
-    public GetUserFriendsDTO GetUserFriends(UUID userId);
-    public User GetValidUser(UUID uuid);
-    public void VerifyAccount(VerifyAccountDTO verifyAccountDTO);
+     void SignUp(SignUpDTO signUpDTO) throws MessagingException, IOException;
+     void UpdateUser(UpdateUserDTO updateUserDTO);
+     void DeleteUser(UUID userId);
+     GetUserOverviewDTO GetUserAccountOverview(UUID userId);
+     GetUserFriendsDTO GetUserFriends(UUID userId);
+     User GetValidUser(UUID uuid);
+     User GetValidByEmail(String email);
+     void VerifyAccount(VerifyAccountDTO verifyAccountDTO);
 
 
 }

@@ -4,7 +4,6 @@ public record EmailDetailsDTO (
         String to,
         String name,
         String verificationCode,
-        String subject,
-        String message
+        String subject
 ){
 }

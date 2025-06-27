@@ -2,7 +2,7 @@ package com.crisd.comet.dto.output;
 
 import java.util.ArrayList;
 
-public record GetFriendRequestsDTO (
-        ArrayList<GetFriendRequestDTO> friendRequest
+public record GetFriendRequestsDTO<T> (
+        ArrayList<T> friendRequest
 ){
 }

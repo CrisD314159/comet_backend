@@ -61,8 +61,7 @@ public class UserService implements IUserService {
                         user.getEmail(),
                         user.getName(),
                         verificationCode,
-                        "Here's your verification code",
-                        ""),
+                        "Here's your verification code"),
                 "templates/verify_account.html");
 
         userRepository.save(user);
@@ -109,8 +108,9 @@ public class UserService implements IUserService {
                 friends.add(friendship.getRequester());
             }
         }
+        ArrayList<GetUserOverviewDTO> overviews = userMapper.toFriendsDTO(friends);
 
-        return userMapper.toFriendsDTO(friends);
+        return new GetUserFriendsDTO(overviews);
     }
 
     @Override
@@ -123,10 +123,21 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public User GetValidByEmail(String email) {
+        User user = userRepository.findUserByEmail(email);
+        if(user == null) throw new EntityNotFoundException("User not found");
+        if(user.getState() == UserState.DELETED) throw new EntityNotFoundException("User not found");
+        if(!user.isVerified()) throw new ValidationException("User is not verified");
+        return user;
+    }
+
+    @Override
     public void VerifyAccount(VerifyAccountDTO verifyAccountDTO) {
         User user = userRepository.findUserByEmail(verifyAccountDTO.email());
 
         if(user == null) throw new EntityNotFoundException("User not found");
+
+        if(user.isVerified()) throw new ValidationException("User is already verified");
 
         if(user.getVerificationCode().equals(verifyAccountDTO.code())){
             user.setVerified(true);

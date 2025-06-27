@@ -3,6 +3,8 @@ package com.crisd.comet.services.implementations;
 import com.crisd.comet.dto.input.AcceptRejectFriendRequestDTO;
 import com.crisd.comet.dto.input.BlockFriendDTO;
 import com.crisd.comet.dto.input.SendFriendRequestDTO;
+import com.crisd.comet.dto.output.GetFriendRequestReceiverDTO;
+import com.crisd.comet.dto.output.GetFriendRequestRequesterDTO;
 import com.crisd.comet.dto.output.GetFriendRequestsDTO;
 import com.crisd.comet.exceptionHandling.exceptions.EntityNotFoundException;
 import com.crisd.comet.exceptionHandling.exceptions.ValidationException;
@@ -31,17 +33,21 @@ public class FriendshipService implements IFriendshipService {
     private final FriendshipRepository friendshipRepository;
     private final FriendshipMapper friendshipMapper;
     @Override
-    public void SendFriendRequest(SendFriendRequestDTO sendFriendRequestDTO) {
-        User requester = userService.GetValidUser(sendFriendRequestDTO.requester());
+    public void SendFriendRequest(UUID requester, SendFriendRequestDTO sendFriendRequestDTO) {
+        User requesterUser = userService.GetValidUser(requester);
 
         User recipient = userService.GetValidUser(sendFriendRequestDTO.receiver());
 
-        if(friendRequestRepository.existsFriendRequestByRecipientOrRequester(requester, recipient)) {
+        if(requesterUser.getId().equals(recipient.getId())) {
+            throw new ValidationException("You can't send friend requests with the same recipient");
+        }
+
+        if(friendRequestRepository.existsFriendRequestByRecipientOrRequester(requesterUser, recipient)) {
             throw new ValidationException("Friend request already exists");
         }
 
         FriendRequest friendRequest = FriendRequest.builder()
-                .requester(requester)
+                .requester(requesterUser)
                 .recipient(recipient)
                 .dateRequested(LocalDateTime.now())
                 .state(FriendRequestState.PENDING)
@@ -53,7 +59,7 @@ public class FriendshipService implements IFriendshipService {
     }
 
     @Override
-    public void AcceptFriendRequest(AcceptRejectFriendRequestDTO acceptRejectFriendRequestDTO) {
+    public void AcceptFriendRequest(UUID recipient, AcceptRejectFriendRequestDTO acceptRejectFriendRequestDTO) {
 
         FriendRequest friendRequest = friendRequestRepository.findByIdAndState(
                 acceptRejectFriendRequestDTO.friendRequestId(),FriendRequestState.PENDING);
@@ -61,6 +67,9 @@ public class FriendshipService implements IFriendshipService {
         if(friendRequest == null) {
             throw new EntityNotFoundException("Friend request not found");
         }
+
+        if (!friendRequest.getRecipient().getId().equals(recipient))
+            throw new ValidationException("Friend request does not belong to the recipient");
 
         friendRequest.setState(FriendRequestState.ACCEPTED);
 
@@ -75,7 +84,7 @@ public class FriendshipService implements IFriendshipService {
     }
 
     @Override
-    public void RejectFriendRequest(AcceptRejectFriendRequestDTO acceptRejectFriendRequestDTO) {
+    public void RejectFriendRequest(UUID recipient, AcceptRejectFriendRequestDTO acceptRejectFriendRequestDTO) {
         FriendRequest friendRequest = friendRequestRepository.findByIdAndState(
                 acceptRejectFriendRequestDTO.friendRequestId(),FriendRequestState.PENDING);
 
@@ -88,28 +97,32 @@ public class FriendshipService implements IFriendshipService {
     }
 
     @Override
-    public GetFriendRequestsDTO GetFriendRequests(UUID userId) {
+    public GetFriendRequestsDTO<GetFriendRequestRequesterDTO> GetFriendRequests(UUID userId) {
         User user = userService.GetValidUser(userId);
         ArrayList<FriendRequest> friendRequests = friendRequestRepository
                 .findAllByRecipientAndState(user, FriendRequestState.PENDING);
 
-        return friendshipMapper.toRequestsDTO(friendRequests);
+        ArrayList<GetFriendRequestRequesterDTO> friendRequestsDTO = friendshipMapper.toRequestsDTOFromRequester(friendRequests);
+
+        return new GetFriendRequestsDTO<>(friendRequestsDTO);
     }
 
     @Override
-    public GetFriendRequestsDTO GetOutGoingFriendRequests(UUID userId) {
+    public GetFriendRequestsDTO<GetFriendRequestReceiverDTO> GetOutGoingFriendRequests(UUID userId) {
         User user = userService.GetValidUser(userId);
         ArrayList<FriendRequest> friendRequests = friendRequestRepository
                 .findAllByRequesterAndState(user, FriendRequestState.PENDING);
 
-        return friendshipMapper.toRequestsDTO(friendRequests);
+        ArrayList<GetFriendRequestReceiverDTO> outgoingFriendRequests = friendshipMapper.toRequestsDTOFromRecipient(friendRequests);
+
+        return new GetFriendRequestsDTO<>(outgoingFriendRequests);
     }
 
     @Override
-    public void BlockFriend(BlockFriendDTO blockFriendDTO) {
-        User requester = userService.GetValidUser(blockFriendDTO.requester());
+    public void BlockFriend(UUID requester, BlockFriendDTO blockFriendDTO) {
+        User requesterUser = userService.GetValidUser(requester);
         User recipient = userService.GetValidUser(blockFriendDTO.friendId());
-        Friendship friendship = findFriendship(requester, recipient);
+        Friendship friendship = findFriendship(requesterUser, recipient);
 
         friendship.setBlocked(true);
         friendshipRepository.save(friendship);

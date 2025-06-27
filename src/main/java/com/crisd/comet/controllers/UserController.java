@@ -2,13 +2,16 @@ package com.crisd.comet.controllers;
 
 import com.crisd.comet.dto.input.SignUpDTO;
 import com.crisd.comet.dto.input.UpdateUserDTO;
+import com.crisd.comet.dto.input.VerifyAccountDTO;
 import com.crisd.comet.dto.output.*;
+import com.crisd.comet.security.UserDetailsImpl;
 import com.crisd.comet.services.interfaces.IUserService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -33,22 +36,31 @@ public class UserController {
         return ResponseEntity.ok().body(new EntityResponseMessage(true, "User Updated"));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<EntityResponseMessage> DeleteUser(@PathVariable UUID id){
-        userService.DeleteUser(id);
+    @DeleteMapping
+    public ResponseEntity<EntityResponseMessage> DeleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        UUID userId = userDetails.getId();
+        userService.DeleteUser(userId);
         return ResponseEntity.ok().body(new EntityResponseMessage(true, "User Deleted"));
     }
 
-    @GetMapping
-    public ResponseEntity<GetUserOverviewDTO> GetUserOverview(@PathVariable UUID id) {
-        var user = userService.GetUserAccountOverview(id);
+    @GetMapping("/profile")
+    public ResponseEntity<GetUserOverviewDTO> GetUserOverview(@AuthenticationPrincipal UserDetailsImpl userAuth) {
+        UUID userId = userAuth.getId();
+        var user = userService.GetUserAccountOverview(userId);
         return ResponseEntity.ok().body(user);
     }
 
     @GetMapping("/getFriends")
-    public ResponseEntity<GetUserFriendsDTO> GetUserFriends(@PathVariable UUID id) {
-        var userFriends = userService.GetUserFriends(id);
+    public ResponseEntity<GetUserFriendsDTO> GetUserFriends(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        UUID userId = userDetails.getId();
+        var userFriends = userService.GetUserFriends(userId);
         return ResponseEntity.ok().body(userFriends);
+    }
+
+    @PutMapping("/verifyAccount")
+    public ResponseEntity<EntityResponseMessage> VerifyAccount(@Valid @RequestBody VerifyAccountDTO verifyAccountDTO){
+        userService.VerifyAccount(verifyAccountDTO);
+        return ResponseEntity.ok().body(new EntityResponseMessage(true, "Account Verified"));
     }
 
 

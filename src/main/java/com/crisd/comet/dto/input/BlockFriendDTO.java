@@ -1,11 +1,11 @@
 package com.crisd.comet.dto.input;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
 public record BlockFriendDTO(
-        @NotBlank UUID requester,
-        @NotBlank UUID friendId
+        @NotNull UUID friendId
         ) {
 }

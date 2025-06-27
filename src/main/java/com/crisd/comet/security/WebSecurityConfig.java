@@ -52,7 +52,8 @@ public class WebSecurityConfig {
                 // Configure endpoint authorization
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
-                        .requestMatchers("/auth/login", "/auth/refresh", "/auth/logout", "/users/signUp").permitAll()
+                        .requestMatchers("/auth/login", "/auth/refresh","auth/resetAccount","/auth/changePassword",
+                                "/auth/logout", "/users/signUp", "/users/verifyAccount").permitAll()
 
                         // All other endpoints require authentication
                         .anyRequest().authenticated()

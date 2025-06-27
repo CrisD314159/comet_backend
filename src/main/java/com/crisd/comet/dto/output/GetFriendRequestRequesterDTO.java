@@ -2,10 +2,11 @@ package com.crisd.comet.dto.output;
 
 import java.util.UUID;
 
-public record GetUserOverviewDTO (
+public record GetFriendRequestRequesterDTO (
         UUID id,
-        String name,
+        UUID userId,
         String profilePicture,
+        String name,
         String biography,
         String country
 ){

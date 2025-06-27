@@ -3,98 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <title>Correo de Comet</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #0d1b2a; /* Navy oscuro */
-      color: #ffffff;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    .container {
-      width: 100%;
-      max-width: 600px;
-      margin: auto;
-      background-color: #121b27; /* Fondo ligeramente más claro */
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    }
-    .header {
-      background-color: #000034;
-      padding: 20px;
-      text-align: center;
-    }
-    .header img {
-      max-width: 100px;
-      height: auto;
-    }
-    .content {
-      padding: 30px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .content h1 {
-      color: #e0e1dd;
-    }
-    .content p {
-      line-height: 1.6;
-    }
-    .footer {
-      text-align: center;
-      font-size: 12px;
-      padding: 15px;
-      color: #999999;
-    }
-    a.button {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 12px 25px;
-      background-color: #0d1b2a;
-      color: white;
-      text-decoration: none;
-      border-radius: 6px;
-      border: 1px solid #778da9;
-    }
-    a.button:hover {
-      background-color: #415a77;
-    }
-    .code_container{
-      height: 80px;
-      width: 50%;
-      background: #415a77;
-      display: flex;
-      justify-content: center;
-      font-size: larger;
-      font-weight: bold;
-      align-items: center;
-      border-radius: 7px;
-    }
-  </style>
 </head>
-<body>
-<div class="container">
-  <div class="header">
-    <img src="https://res.cloudinary.com/dw43hgf5p/image/upload/v1750709791/AF3173AB-74B3-42F6-95B3-E77602CBA371_Background_Removed_nlvryg.png" alt="Logo de Comet">
-  </div>
-  <div class="content">
-    <h1>¡Hi {{username}}!</h1>
-    <p>
-      Welcome to <strong>Comet</strong>, it's great to have you here!
-    </p>
-    <p>
-      Here's your recovery link for your account. Please click the button below to recover your account
-    </p>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #ffffff;">
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td align="center" style="padding: 20px 0;">
+      <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" style="background-color: #121b27; border-radius: 8px;">
+        <!-- Encabezado -->
+        <tr>
+          <td align="center" style="background-color: #000034; padding: 20px;">
+            <img src="https://res.cloudinary.com/dw43hgf5p/image/upload/v1750709791/AF3173AB-74B3-42F6-95B3-E77602CBA371_Background_Removed_nlvryg.png" alt="Logo de Comet" style="max-width: 100px; height: auto;">
+          </td>
+        </tr>
+        <!-- Contenido -->
+        <tr>
+          <td align="center" style="padding: 30px 20px;">
+            <h1 style="color: #e0e1dd; margin: 0;">¡Hi {{username}}!</h1>
+            <p style="line-height: 1.6; margin: 20px 0 10px;">
+              Welcome to <strong>Comet</strong>, it's great to have you here!
+            </p>
+            <p style="line-height: 1.6; margin: 0 0 20px;">
+              Here's your recovery link for your account. Please click the button below to recover your account:
+            </p>
 
-    <a class="button" href="{{verification_code}}">Recover your account</a>
-
-
-  </div>
-  <div class="footer">
-    &copy; 2025 Comet. Todos los derechos reservados.<br>
-    Este mensaje fue enviado automáticamente, por favor no respondas.
-  </div>
-</div>
+            <!-- Botón -->
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top: 20px;">
+              <tr>
+                <td align="center" bgcolor="#0d1b2a" style="border-radius: 6px; border: 1px solid #778da9;">
+                  <a href="{{verification_code}}" target="_blank"
+                     style="font-size: 16px; font-weight: bold; text-decoration: none; padding: 12px 25px; display: inline-block; color: #ffffff;">
+                    Recover your account
+                  </a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <!-- Pie de página -->
+        <tr>
+          <td align="center" style="padding: 15px; font-size: 12px; color: #999999;">
+            &copy; 2025 Comet. Todos los derechos reservados.<br>
+            Este mensaje fue enviado automáticamente, por favor no respondas.
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
 </body>
 </html>

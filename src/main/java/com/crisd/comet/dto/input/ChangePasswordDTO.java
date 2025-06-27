@@ -2,11 +2,15 @@ package com.crisd.comet.dto.input;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 public record ChangePasswordDTO(
        @NotBlank @Email String email,
        @NotBlank  String code,
-       @NotBlank String password
+       @NotBlank @Pattern(
+               regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).{8,}$",
+               message = "The password must be at least 8 characters, one letter, one number and a special character"
+       )  String password
 ) {
 
 
