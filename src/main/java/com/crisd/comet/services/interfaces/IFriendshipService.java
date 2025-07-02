@@ -16,4 +16,6 @@ public interface IFriendshipService {
      GetFriendRequestsDTO<GetFriendRequestRequesterDTO> GetFriendRequests(UUID userId);
      GetFriendRequestsDTO<GetFriendRequestReceiverDTO> GetOutGoingFriendRequests(UUID userId);
      void BlockFriend(UUID requester, BlockFriendDTO blockFriendDTO);
+     void UnblockFriend(UUID requester, BlockFriendDTO blockFriendDTO);
+     void DeleteFriend(UUID requester, BlockFriendDTO blockFriendDTO);
 }

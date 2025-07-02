@@ -12,7 +12,7 @@ import java.util.UUID;
 @Repository
 public interface FriendRequestRepository extends JpaRepository<FriendRequest, UUID> {
 
-    boolean existsFriendRequestByRecipientOrRequester(User recipient, User requester);
+    ArrayList<FriendRequest> findByRecipientAndRequester(User recipient, User requester);
 
     FriendRequest findByIdAndState(UUID id, FriendRequestState state);
 

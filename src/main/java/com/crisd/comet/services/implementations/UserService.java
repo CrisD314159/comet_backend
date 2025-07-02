@@ -13,6 +13,7 @@ import com.crisd.comet.repositories.FriendshipRepository;
 import com.crisd.comet.repositories.UserRepository;
 import com.crisd.comet.services.interfaces.IEmailService;
 import com.crisd.comet.services.interfaces.IUserService;
+import io.getstream.chat.java.exceptions.StreamException;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +36,10 @@ public class UserService implements IUserService {
     private final IEmailService emailService;
     private final FriendshipRepository friendshipRepository;
     private final UserMapper userMapper;
+    private final ChatService chatService;
 
     @Override
-    public void SignUp(SignUpDTO signUpDTO) throws MessagingException, IOException {
+    public void SignUp(SignUpDTO signUpDTO) throws MessagingException, IOException, StreamException {
 
         var verificationCode = String.valueOf(
                 ThreadLocalRandom.current().nextInt(1000, 10000));
@@ -55,7 +57,7 @@ public class UserService implements IUserService {
                 .verificationCode(verificationCode)
                 .password(passwordEncoder.encode(signUpDTO.password()))
                 .build();
-
+        
         emailService.SendMail(
                 new EmailDetailsDTO(
                         user.getEmail(),
@@ -65,10 +67,12 @@ public class UserService implements IUserService {
                 "templates/verify_account.html");
 
         userRepository.save(user);
+        chatService.UpsertStreamUser(new StreamUserDetails(
+                user.getId().toString(), user.getName(), user.getProfilePicture()));
     }
 
     @Override
-    public void UpdateUser(UpdateUserDTO updateUserDTO) {
+    public void UpdateUser(UpdateUserDTO updateUserDTO) throws StreamException {
         User user = GetValidUser(updateUserDTO.id());
 
         user.setBiography(updateUserDTO.biography());
@@ -76,6 +80,8 @@ public class UserService implements IUserService {
         user.setName(updateUserDTO.name());
         user.setProfilePicture(updateUserDTO.profilePicture());
 
+        chatService.UpsertStreamUser(new StreamUserDetails(
+                user.getId().toString(), user.getName(), user.getProfilePicture()));
         userRepository.save(user);
     }
 

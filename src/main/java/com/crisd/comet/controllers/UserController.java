@@ -6,6 +6,7 @@ import com.crisd.comet.dto.input.VerifyAccountDTO;
 import com.crisd.comet.dto.output.*;
 import com.crisd.comet.security.UserDetailsImpl;
 import com.crisd.comet.services.interfaces.IUserService;
+import io.getstream.chat.java.exceptions.StreamException;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,13 +26,13 @@ public class UserController {
 
 
     @PostMapping("/signUp")
-    public ResponseEntity<EntityResponseMessage> CreateUser(@Valid @RequestBody SignUpDTO signUpDTO) throws MessagingException, IOException {
+    public ResponseEntity<EntityResponseMessage> CreateUser(@Valid @RequestBody SignUpDTO signUpDTO) throws MessagingException, IOException, StreamException {
         userService.SignUp(signUpDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(new EntityResponseMessage(true, "User Created"));
     }
 
     @PutMapping
-    public ResponseEntity<EntityResponseMessage> UpdateUser(@Valid @RequestBody UpdateUserDTO signUpDTO){
+    public ResponseEntity<EntityResponseMessage> UpdateUser(@Valid @RequestBody UpdateUserDTO signUpDTO) throws StreamException {
         userService.UpdateUser(signUpDTO);
         return ResponseEntity.ok().body(new EntityResponseMessage(true, "User Updated"));
     }

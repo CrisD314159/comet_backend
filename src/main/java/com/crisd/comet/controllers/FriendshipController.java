@@ -74,4 +74,24 @@ public class FriendshipController {
         return ResponseEntity.ok(new EntityResponseMessage(true, "Friend blocked"));
     }
 
+    @PutMapping("/unblockFriend")
+    public ResponseEntity<EntityResponseMessage> UnblockFriend(
+            @Valid @RequestBody BlockFriendDTO friendDTO,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        UUID requesterId = userDetails.getId();
+        friendshipService.UnblockFriend(requesterId, friendDTO);
+        return ResponseEntity.ok(new EntityResponseMessage(true, "Friend unblocked"));
+    }
+
+    @PutMapping("/deleteFriend")
+    public ResponseEntity<EntityResponseMessage> DeleteFriend(
+            @Valid @RequestBody BlockFriendDTO friendDTO,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        UUID requesterId = userDetails.getId();
+        friendshipService.DeleteFriend(requesterId, friendDTO);
+        return ResponseEntity.ok(new EntityResponseMessage(true, "Friend deleted"));
+    }
+
 }

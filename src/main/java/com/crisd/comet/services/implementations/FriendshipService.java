@@ -42,7 +42,7 @@ public class FriendshipService implements IFriendshipService {
             throw new ValidationException("You can't send friend requests with the same recipient");
         }
 
-        if(friendRequestRepository.existsFriendRequestByRecipientOrRequester(requesterUser, recipient)) {
+        if(RequestAlreadyExists(requesterUser, recipient)) {
             throw new ValidationException("Friend request already exists");
         }
 
@@ -56,6 +56,19 @@ public class FriendshipService implements IFriendshipService {
 
 
         friendRequestRepository.save(friendRequest);
+    }
+
+    private boolean RequestAlreadyExists(User requester, User recipient) {
+        ArrayList<FriendRequest> friendRequest = Optional.ofNullable(friendRequestRepository.findByRecipientAndRequester(recipient, requester))
+                .or(() -> Optional.ofNullable(friendRequestRepository.findByRecipientAndRequester(requester, recipient)))
+                .orElseThrow(() -> new EntityNotFoundException("Friendship not found"));
+
+        for(FriendRequest request : friendRequest){
+            if (request.getState() != FriendRequestState.REJECTED){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -91,6 +104,7 @@ public class FriendshipService implements IFriendshipService {
         if(friendRequest == null) {
             throw new EntityNotFoundException("Friend request not found");
         }
+
         friendRequest.setState(FriendRequestState.REJECTED);
 
         friendRequestRepository.save(friendRequest);
@@ -126,6 +140,32 @@ public class FriendshipService implements IFriendshipService {
 
         friendship.setBlocked(true);
         friendshipRepository.save(friendship);
+    }
+
+    @Override
+    public void UnblockFriend(UUID requester, BlockFriendDTO blockFriendDTO) {
+        User requesterUser = userService.GetValidUser(requester);
+        User recipient = userService.GetValidUser(blockFriendDTO.friendId());
+        Friendship friendship = findFriendship(requesterUser, recipient);
+
+        friendship.setBlocked(false);
+        friendshipRepository.save(friendship);
+    }
+
+    @Override
+    public void DeleteFriend(UUID requester, BlockFriendDTO blockFriendDTO) {
+        User requesterUser = userService.GetValidUser(requester);
+        User recipient = userService.GetValidUser(blockFriendDTO.friendId());
+        Friendship friendship = findFriendship(requesterUser, recipient);
+
+        ArrayList<FriendRequest> friendRequest = friendRequestRepository.findByRecipientAndRequester(friendship.getRecipient(), friendship.getRequester());
+
+        for(FriendRequest request: friendRequest){
+            if(request.getState() != FriendRequestState.REJECTED){
+                friendRequestRepository.delete(request);
+            }
+        }
+        friendshipRepository.delete(friendship);
     }
 
     private Friendship findFriendship(User user1, User user2) {
