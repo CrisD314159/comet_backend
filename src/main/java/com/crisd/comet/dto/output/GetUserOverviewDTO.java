@@ -7,6 +7,7 @@ public record GetUserOverviewDTO (
         String name,
         String profilePicture,
         String biography,
-        String country
+        String country,
+        boolean blocked
 ){
 }

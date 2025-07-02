@@ -109,9 +109,28 @@ public class UserService implements IUserService {
 
         for(Friendship friendship : friendships){
             if(!friendship.getRecipient().getId().equals(userId)){
-                friends.add(friendship.getRecipient());
+                if(!friendship.isBlocked()) friends.add(friendship.getRecipient());
             }else{
-                friends.add(friendship.getRequester());
+                if(!friendship.isBlocked()) friends.add(friendship.getRequester());
+            }
+        }
+        ArrayList<GetUserOverviewDTO> overviews = userMapper.toFriendsDTO(friends);
+
+        return new GetUserFriendsDTO(overviews);
+    }
+
+    @Override
+    public GetUserFriendsDTO GetUserBlockedFriends(UUID userId) {
+        User user = GetValidUser(userId);
+        ArrayList<Friendship> friendships = friendshipRepository.findAllByRequesterOrRecipient(user, user);
+
+        ArrayList<User> friends = new ArrayList<>();
+
+        for(Friendship friendship : friendships){
+            if(!friendship.getRecipient().getId().equals(userId)){
+                if(friendship.isBlocked()) friends.add(friendship.getRecipient());
+            }else{
+                if(friendship.isBlocked()) friends.add(friendship.getRequester());
             }
         }
         ArrayList<GetUserOverviewDTO> overviews = userMapper.toFriendsDTO(friends);

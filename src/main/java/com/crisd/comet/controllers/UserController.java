@@ -58,6 +58,13 @@ public class UserController {
         return ResponseEntity.ok().body(userFriends);
     }
 
+    @GetMapping("/getBlockedFriends")
+    public ResponseEntity<GetUserFriendsDTO> GetUserBlockedFriends(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        UUID userId = userDetails.getId();
+        var userFriends = userService.GetUserBlockedFriends(userId);
+        return ResponseEntity.ok().body(userFriends);
+    }
+
     @PutMapping("/verifyAccount")
     public ResponseEntity<EntityResponseMessage> VerifyAccount(@Valid @RequestBody VerifyAccountDTO verifyAccountDTO){
         userService.VerifyAccount(verifyAccountDTO);

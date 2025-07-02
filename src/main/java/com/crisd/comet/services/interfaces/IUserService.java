@@ -17,6 +17,7 @@ public interface IUserService {
      void DeleteUser(UUID userId);
      GetUserOverviewDTO GetUserAccountOverview(UUID userId);
      GetUserFriendsDTO GetUserFriends(UUID userId);
+     GetUserFriendsDTO GetUserBlockedFriends(UUID userId);
      User GetValidUser(UUID uuid);
      User GetValidByEmail(String email);
      void VerifyAccount(VerifyAccountDTO verifyAccountDTO);
