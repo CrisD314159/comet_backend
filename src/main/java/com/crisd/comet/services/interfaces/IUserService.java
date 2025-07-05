@@ -8,6 +8,7 @@ import io.getstream.chat.java.exceptions.StreamException;
 import jakarta.mail.MessagingException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public interface IUserService {
@@ -21,6 +22,7 @@ public interface IUserService {
      User GetValidUser(UUID uuid);
      User GetValidByEmail(String email);
      void VerifyAccount(VerifyAccountDTO verifyAccountDTO);
+     ArrayList<GetUserOverviewDTO> SearchUsers(UUID loggedUser, String name, int offset, int limit);
 
 
 }

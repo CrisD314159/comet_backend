@@ -18,6 +18,14 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private final JWTUtil jwtUtil;
     private final CustomUserDetailsService customUserDetailsService;
 
+    /**
+     * In this class we define the method doFilterInternal who handles the JWT token verification
+     * @param request
+     * @param response
+     * @param filterChain
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");

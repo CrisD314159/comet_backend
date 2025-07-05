@@ -6,6 +6,8 @@ import com.crisd.comet.dto.input.SendFriendRequestDTO;
 import com.crisd.comet.dto.output.GetFriendRequestReceiverDTO;
 import com.crisd.comet.dto.output.GetFriendRequestRequesterDTO;
 import com.crisd.comet.dto.output.GetFriendRequestsDTO;
+import com.crisd.comet.model.Friendship;
+import com.crisd.comet.model.User;
 
 import java.util.UUID;
 

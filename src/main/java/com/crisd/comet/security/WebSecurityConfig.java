@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,15 +16,23 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
+    /**
+     * This class is used to configure spring security framework
+     * passwordEncoder is a bean that handles password encryption or comparison
+     * authenticationManager handles the authentication whe we requested on the account serivce
+     * securityFilterChain is where we set the protected routes and where we can set up Oauth2
+     */
 
      private final CustomUserDetailsService customUserDetailsService;
      private final AuthTokenFilter authTokenFilter;
+     private final CustomSuccessHandler customSuccessHandler;
 
     /*
      * Password encoder bean (uses BCrypt hashing)
@@ -58,7 +67,8 @@ public class WebSecurityConfig {
                         // All other endpoints require authentication
                         .anyRequest().authenticated()
                 )
-
+                // Oauth for google authentication
+                .oauth2Login(oauth -> oauth.successHandler(customSuccessHandler))
                 .userDetailsService(customUserDetailsService)
                 // Stateless session (required for JWT)
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -68,5 +78,6 @@ public class WebSecurityConfig {
 
         return http.build();
     }
+
 
 }

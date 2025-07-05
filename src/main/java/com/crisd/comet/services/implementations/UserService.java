@@ -6,9 +6,12 @@ import com.crisd.comet.dto.output.GetUserOverviewDTO;
 import com.crisd.comet.exceptionHandling.exceptions.EntityNotFoundException;
 import com.crisd.comet.exceptionHandling.exceptions.ValidationException;
 import com.crisd.comet.mappers.UserMapper;
+import com.crisd.comet.model.FriendRequest;
 import com.crisd.comet.model.Friendship;
 import com.crisd.comet.model.User;
+import com.crisd.comet.model.enums.FriendRequestState;
 import com.crisd.comet.model.enums.UserState;
+import com.crisd.comet.repositories.FriendRequestRepository;
 import com.crisd.comet.repositories.FriendshipRepository;
 import com.crisd.comet.repositories.UserRepository;
 import com.crisd.comet.services.interfaces.IEmailService;
@@ -17,12 +20,17 @@ import io.getstream.chat.java.exceptions.StreamException;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -35,6 +43,7 @@ public class UserService implements IUserService {
     private final PasswordEncoder passwordEncoder;
     private final IEmailService emailService;
     private final FriendshipRepository friendshipRepository;
+    private final FriendRequestRepository friendRequestRepository;
     private final UserMapper userMapper;
     private final ChatService chatService;
 
@@ -171,5 +180,37 @@ public class UserService implements IUserService {
         }else{
             throw new ValidationException("Invalid email or verification code");
         }
+    }
+
+    @Override
+    public ArrayList<GetUserOverviewDTO> SearchUsers(UUID loggedUser, String name, int offset, int limit) {
+        Pageable pageable = PageRequest.of(offset, limit);
+        User loggedUserObj = GetValidUser(loggedUser);
+
+        Page<User> users = userRepository.findByNameIsContainingIgnoreCase(name, pageable);
+
+        List<User> usersFound = users.getContent();
+
+        ArrayList<User> notFriends = new ArrayList<>();
+
+        for(User user : usersFound){
+            findFriendship(loggedUserObj, user);
+            if(findFriendship(loggedUserObj, user) == null
+            && findFriendRequest(loggedUserObj, user) == null
+            ) notFriends.add(user);
+        }
+        return userMapper.toFriendsDTO(notFriends);
+    }
+
+    private Friendship findFriendship(User user1, User user2) {
+        return Optional.ofNullable(friendshipRepository.findByRequesterAndRecipient(user1, user2))
+                .or(() -> Optional.ofNullable(friendshipRepository.findByRequesterAndRecipient(user2, user1)))
+                .orElse(null);
+    }
+
+    private FriendRequest findFriendRequest(User user1, User user2) {
+        return Optional.ofNullable(friendRequestRepository.findByRecipientAndRequesterAndState(user1, user2, FriendRequestState.PENDING))
+                .or(() -> Optional.ofNullable(friendRequestRepository.findByRecipientAndRequesterAndState(user2, user1, FriendRequestState.PENDING)))
+                .orElse(null);
     }
 }

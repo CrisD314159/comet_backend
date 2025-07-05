@@ -40,4 +40,5 @@ public class User  implements Serializable {
     private String verificationCode;
     private LocalDateTime createdAt;
     private LocalDateTime lastModifiedAt;
+    private boolean createdWithGoogle;
 }

@@ -11,6 +11,12 @@ import java.util.UUID;
 @Getter
 public class UserDetailsImpl implements UserDetails {
 
+    /**
+     * Class used to personalize the user that is logged in,
+     * with this, we can retrieve the user data (like id or name) from the controllers
+     * just when the JWT Access token is successfully verified for spring security
+     */
+
     private final UUID id;
     private final String email;
     private final String password;

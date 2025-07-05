@@ -168,6 +168,7 @@ public class FriendshipService implements IFriendshipService {
         friendshipRepository.delete(friendship);
     }
 
+
     private Friendship findFriendship(User user1, User user2) {
         return Optional.ofNullable(friendshipRepository.findByRequesterAndRecipient(user1, user2))
                 .or(() -> Optional.ofNullable(friendshipRepository.findByRequesterAndRecipient(user2, user1)))

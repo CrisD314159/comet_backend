@@ -8,6 +8,7 @@ public record GetUserOverviewDTO (
         String profilePicture,
         String biography,
         String country,
-        boolean blocked
+        boolean blocked,
+        boolean createdWithGoogle
 ){
 }

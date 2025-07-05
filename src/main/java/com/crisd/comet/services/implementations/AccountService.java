@@ -11,7 +11,7 @@ import com.crisd.comet.model.enums.UserState;
 import com.crisd.comet.repositories.SessionRepository;
 import com.crisd.comet.repositories.UserRepository;
 import com.crisd.comet.security.JWTUtil;
-import com.crisd.comet.services.interfaces.IAccountInterface;
+import com.crisd.comet.services.interfaces.IAccountService;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class AccountService implements IAccountInterface {
+public class AccountService implements IAccountService {
 
     private final JWTUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
@@ -43,7 +43,8 @@ public class AccountService implements IAccountInterface {
 
     @Override
     public TokenResponseDTO Login(LoginDTO loginDTO) {
-        userService.GetValidByEmail(loginDTO.email());
+        User userEmail = userService.GetValidByEmail(loginDTO.email());
+        if(userEmail.isCreatedWithGoogle()) throw  new ValidationException("Use your google account to sign in");
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDTO.email(), loginDTO.password())
@@ -58,6 +59,8 @@ public class AccountService implements IAccountInterface {
 
         throw new ValidationException("Invalid email or password");
     }
+
+
 
     @Override
     public void Logout(RefreshTokenDTO refreshTokenDTO) {
@@ -105,6 +108,7 @@ public class AccountService implements IAccountInterface {
     public void ResetAccountEmail(RequestPasswordChangeDTO requestPasswordChangeDTO) throws MessagingException, IOException {
         User user = userService.GetValidByEmail(requestPasswordChangeDTO.email());
         if(user == null) throw new EntityNotFoundException("User not found");
+        if(user.isCreatedWithGoogle()) throw  new ValidationException("Use your google account to sign in");
 
         String token = jwtUtil.GenerateToken(user.getId(), user.getEmail(), false, null);
 
@@ -125,6 +129,7 @@ public class AccountService implements IAccountInterface {
     public void ChangePassword(ChangePasswordDTO changePasswordDTO) {
         User user = userService.GetValidByEmail(changePasswordDTO.email());
         if(user == null) throw new EntityNotFoundException("User not found");
+        if(user.isCreatedWithGoogle()) throw  new ValidationException("Use your google account to sign in");
 
         if(!IsValidRecoveryToken(changePasswordDTO.code(), user.getVerificationCode(), user.getEmail()))
             throw new ValidationException("Invalid email or verification code");
@@ -138,7 +143,8 @@ public class AccountService implements IAccountInterface {
         return jwtUtil.ValidateRecoverToken(providedToken, userEmail) && providedToken.equals(userToken);
     }
 
-    private String CreateSession(User user){
+    @Override
+    public String CreateSession(User user){
         Session session = Session.builder()
                 .createdAt(LocalDateTime.now())
                 .expiresAt(LocalDateTime.now().plusDays(7))
