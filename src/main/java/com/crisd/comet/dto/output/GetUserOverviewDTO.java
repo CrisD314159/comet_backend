@@ -6,6 +6,7 @@ public record GetUserOverviewDTO (
         UUID id,
         String name,
         String profilePicture,
+        String email,
         String biography,
         String country,
         boolean blocked,

@@ -7,15 +7,15 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 
 public record SignUpDTO(
-        @NotBlank @Length(max = 60) String name,
+        @NotBlank(message = "Name must not be blank") @Length(max = 60) String name,
        @Length(max = 200)  String biography,
-       @Length(max = 60) String country,
-       @NotBlank @Email String email,
+       @Length(max = 30) String country,
+       @NotBlank (message = "Email must not be blank") @Email String email,
         @NotBlank @Pattern(
                 regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).{8,}$",
                 message = "The password must be at least 8 characters, one letter, one number and a special character"
         ) String password,
-        @NotBlank @URL String profilePictureUrl
+        @NotBlank(message = "Profile picture must not be blank") @URL String profilePictureUrl
 
 ) {
 }

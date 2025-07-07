@@ -4,6 +4,7 @@ import com.crisd.comet.dto.input.*;
 import com.crisd.comet.dto.output.GetUserFriendsDTO;
 import com.crisd.comet.dto.output.GetUserOverviewDTO;
 import com.crisd.comet.exceptionHandling.exceptions.EntityNotFoundException;
+import com.crisd.comet.exceptionHandling.exceptions.UnauthorizedException;
 import com.crisd.comet.exceptionHandling.exceptions.ValidationException;
 import com.crisd.comet.mappers.UserMapper;
 import com.crisd.comet.model.FriendRequest;
@@ -152,7 +153,7 @@ public class UserService implements IUserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         if(user.getState() == UserState.DELETED) throw new EntityNotFoundException("User not found");
-        if(!user.isVerified()) throw new ValidationException("User is not verified");
+        if(!user.isVerified()) throw new UnauthorizedException("User is not verified");
         return user;
     }
 
@@ -161,7 +162,7 @@ public class UserService implements IUserService {
         User user = userRepository.findUserByEmail(email);
         if(user == null) throw new EntityNotFoundException("User not found");
         if(user.getState() == UserState.DELETED) throw new EntityNotFoundException("User not found");
-        if(!user.isVerified()) throw new ValidationException("User is not verified");
+        if(!user.isVerified()) throw new UnauthorizedException("User is not verified");
         return user;
     }
 
