@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -28,6 +29,9 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 
     private final IThirdPartyAccountService accountService;
 
+    @Value("${spring.front}")
+    private String frontEndpoint;
+
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -45,7 +49,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
             throw new RuntimeException(e);
         }
 
-        String url = String.format("http://localhost:3000/api/auth/google/callback?token=%s&refresh=%s", tokens.token(), tokens.refreshToken());
+        String url = String.format("%s/api/auth/google/callback?token=%s&refresh=%s", frontEndpoint, tokens.token(), tokens.refreshToken());
         response.sendRedirect(url);
     }
 }

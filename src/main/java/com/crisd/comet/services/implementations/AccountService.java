@@ -15,6 +15,7 @@ import com.crisd.comet.services.interfaces.IAccountService;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,6 +41,8 @@ public class AccountService implements IAccountService {
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
+    @Value("${spring.front}")
+    private String front;
 
     @Override
     public TokenResponseDTO Login(LoginDTO loginDTO) {
@@ -116,7 +119,7 @@ public class AccountService implements IAccountService {
 
         String tokenEncoded = URLEncoder.encode(token, StandardCharsets.UTF_8);
 
-        String url = String.format("https://comet-calls.vercel.app/resetAccount?code={%s}", tokenEncoded);
+        String url = String.format("%s/resetAccount?code={%s}", front, tokenEncoded);
 
         emailService.SendMail(new EmailDetailsDTO(
                 user.getEmail(), user.getName(), url, "Here's your recovery code for Comet"),
