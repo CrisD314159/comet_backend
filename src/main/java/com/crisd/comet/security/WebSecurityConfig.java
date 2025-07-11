@@ -33,6 +33,7 @@ public class WebSecurityConfig {
      private final CustomUserDetailsService customUserDetailsService;
      private final AuthTokenFilter authTokenFilter;
      private final CustomSuccessHandler customSuccessHandler;
+     private final CustomFailureHandler customFailureHandler;
 
     /*
      * Password encoder bean (uses BCrypt hashing)
@@ -68,7 +69,12 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated()
                 )
                 // Oauth for google authentication
-                .oauth2Login(oauth -> oauth.successHandler(customSuccessHandler))
+                .oauth2Login(oauth -> {
+
+                    oauth.successHandler(customSuccessHandler);
+                    oauth.failureHandler(customFailureHandler);
+
+                })
                 .userDetailsService(customUserDetailsService)
                 // Stateless session (required for JWT)
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
