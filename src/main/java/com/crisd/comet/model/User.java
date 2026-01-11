@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -35,10 +36,18 @@ public class User  implements Serializable {
     private String password;
     @Column(nullable = false)
     private String profilePicture;
+    @Column
     private boolean isVerified;
+    @Column
     private UserState state;
+    @Column
     private String verificationCode;
+    @Column
     private LocalDateTime createdAt;
+    @Column
     private LocalDateTime lastModifiedAt;
+    @Column
     private boolean createdWithGoogle;
+    @OneToMany
+    private List<Post> userPosts;
 }

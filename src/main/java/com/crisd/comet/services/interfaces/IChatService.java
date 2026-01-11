@@ -10,5 +10,4 @@ import java.util.UUID;
 public interface IChatService {
     String generateToken(UUID userId);
     void UpsertStreamUser(StreamUserDetails user) throws StreamException;
-
 }
