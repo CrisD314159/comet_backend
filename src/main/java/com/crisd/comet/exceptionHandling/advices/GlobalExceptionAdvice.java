@@ -24,6 +24,13 @@ class GlobalExceptionAdvice {
         );
     }
 
+    @ExceptionHandler(UnexpectedException.class)
+    public ResponseEntity<ErrorResponseMessage<String>> unexpectedExceptionHandler(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                new ErrorResponseMessage<>(false, e.getMessage())
+        );
+    }
+
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorResponseMessage<String>> badRequestHandler(BadRequestException e) {

@@ -23,20 +23,21 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User author;
     @Column(nullable = true, length = 200)
     private String description;
-    @Column(nullable = true)
-    private String media;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Image> media;
     @Column
     private PostType postType;
     @Column
     private PostState postState;
     @Column
     private LocalDate datePosted;
-    @OneToMany
-    private Set<Post> reactions;
-    @OneToMany
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Reaction> reactions;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
 
 }

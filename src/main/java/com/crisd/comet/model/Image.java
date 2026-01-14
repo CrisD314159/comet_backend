@@ -1,27 +1,27 @@
 package com.crisd.comet.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
+import java.io.Serializable;
 
 @Entity
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Reaction {
+@Builder
+public class Image implements Serializable {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private String id;
+    private String url;
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
 }
