@@ -14,7 +14,6 @@ import java.util.UUID;
 @Repository
 public interface PostRepository extends JpaRepository<Post, UUID> {
     Optional<Post> findPostByIdAndPostState(UUID id, PostState postState);
-    List<Post> findAllByAuthor_IdAndPostState(UUID authorId, PostState postState);
     Page<Post> findPostsByAuthor_IdAndPostState(UUID authorId, PostState postState, Pageable pageable);
     Page<Post> findPostsByPostState(PostState postState, Pageable pageable);
 }

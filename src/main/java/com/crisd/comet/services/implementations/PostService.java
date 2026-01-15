@@ -1,6 +1,7 @@
 package com.crisd.comet.services.implementations;
 
 import com.crisd.comet.dto.input.CreatePostDTO;
+import com.crisd.comet.dto.input.RemoveImageDTO;
 import com.crisd.comet.dto.input.UpdatePostDTO;
 import com.crisd.comet.dto.output.GetPostDTO;
 import com.crisd.comet.exceptionHandling.exceptions.EntityNotFoundException;
@@ -38,8 +39,8 @@ public class PostService implements IPostService {
 
 
     @Override
-    public void CreatePost(CreatePostDTO createPostDTO) {
-        User availbleUser = userService.GetValidUser(createPostDTO.userId());
+    public void CreatePost(CreatePostDTO createPostDTO, UUID userId) {
+        User availbleUser = userService.GetValidUser(userId);
 
         PostType postType = CheckAvailableContent(createPostDTO.text(), createPostDTO.media());
 
@@ -85,8 +86,8 @@ public class PostService implements IPostService {
     }
 
     @Override
-    public void UpdatePost(UpdatePostDTO updatePostDTO) {
-        userService.GetValidUser(updatePostDTO.userId());
+    public void UpdatePost(UpdatePostDTO updatePostDTO, UUID userId) {
+        userService.GetValidUser(userId);
         Post postToEdit = GetPostByStateAndId(updatePostDTO.postId(), PostState.ACTIVE);
 
         if (postToEdit.getMedia().size() + updatePostDTO.media().size() >= 10){
@@ -126,9 +127,9 @@ public class PostService implements IPostService {
     }
 
     @Override
-    public void RemoveImageFromPost(UUID userId, String imageId, UUID postId) {
-        Post postToEdit = GetPostByStateAndId(postId, PostState.ACTIVE);
-        Image image = mediaService.GetImage(imageId);
+    public void RemoveImageFromPost(UUID userId, RemoveImageDTO removeImageDTO) {
+        Post postToEdit = GetPostByStateAndId(removeImageDTO.postId(), PostState.ACTIVE);
+        Image image = mediaService.GetImage(removeImageDTO.imageId());
         if (!image.getPost().getId().equals(postToEdit.getId()))
             throw new ValidationException("Can't delete image from post");
 

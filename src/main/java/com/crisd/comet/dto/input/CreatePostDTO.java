@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 public record CreatePostDTO(
-       @NotNull UUID userId,
-       @Null String text,
+        @Null String text,
        @Null List<MultipartFile> media
 ) {
 

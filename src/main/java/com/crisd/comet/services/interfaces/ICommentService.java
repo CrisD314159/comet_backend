@@ -8,5 +8,5 @@ import java.util.UUID;
 
 public interface ICommentService {
     List<GetPostCommentDTO> GetPostComments(UUID postId, UUID userId);
-    void CreateComment(CreateCommentDTO createCommentDTO);
+    void CreateComment(CreateCommentDTO createCommentDTO, UUID author);
 }
