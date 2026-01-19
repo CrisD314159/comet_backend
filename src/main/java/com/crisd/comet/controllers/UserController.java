@@ -4,9 +4,6 @@ import com.crisd.comet.dto.input.SignUpDTO;
 import com.crisd.comet.dto.input.UpdateUserDTO;
 import com.crisd.comet.dto.input.VerifyAccountDTO;
 import com.crisd.comet.dto.output.*;
-import com.crisd.comet.exceptionHandling.exceptions.EntityNotFoundException;
-import com.crisd.comet.model.Friendship;
-import com.crisd.comet.model.User;
 import com.crisd.comet.security.UserDetailsImpl;
 import com.crisd.comet.services.interfaces.IUserService;
 import io.getstream.chat.java.exceptions.StreamException;
@@ -20,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController

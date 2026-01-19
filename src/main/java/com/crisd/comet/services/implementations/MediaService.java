@@ -2,13 +2,11 @@ package com.crisd.comet.services.implementations;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.crisd.comet.configurations.CloudinaryConfigurations;
 import com.crisd.comet.exceptionHandling.exceptions.EntityNotFoundException;
 import com.crisd.comet.exceptionHandling.exceptions.UnexpectedException;
 import com.crisd.comet.model.Image;
 import com.crisd.comet.repositories.ImageRepository;
 import com.crisd.comet.services.interfaces.IMediaService;
-import jakarta.mail.Multipart;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

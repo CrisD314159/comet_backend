@@ -7,7 +7,6 @@ import com.crisd.comet.exceptionHandling.exceptions.UnauthorizedException;
 import com.crisd.comet.exceptionHandling.exceptions.ValidationException;
 import com.crisd.comet.model.Session;
 import com.crisd.comet.model.User;
-import com.crisd.comet.model.enums.UserState;
 import com.crisd.comet.repositories.SessionRepository;
 import com.crisd.comet.repositories.UserRepository;
 import com.crisd.comet.security.JWTUtil;

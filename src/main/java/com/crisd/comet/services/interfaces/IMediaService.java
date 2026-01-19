@@ -1,7 +1,6 @@
 package com.crisd.comet.services.interfaces;
 
 import com.crisd.comet.model.Image;
-import jakarta.mail.Multipart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

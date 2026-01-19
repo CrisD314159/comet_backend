@@ -1,7 +1,6 @@
 package com.crisd.comet.security;
 
 import com.crisd.comet.dto.output.TokenResponseDTO;
-import com.crisd.comet.services.interfaces.IAccountService;
 import com.crisd.comet.services.interfaces.IThirdPartyAccountService;
 import io.getstream.chat.java.exceptions.StreamException;
 import jakarta.servlet.ServletException;

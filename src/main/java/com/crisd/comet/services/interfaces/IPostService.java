@@ -3,7 +3,6 @@ package com.crisd.comet.services.interfaces;
 import com.crisd.comet.dto.input.CreatePostDTO;
 import com.crisd.comet.dto.input.RemoveImageDTO;
 import com.crisd.comet.dto.input.UpdatePostDTO;
-import com.crisd.comet.dto.output.GetPostCommentDTO;
 import com.crisd.comet.dto.output.GetPostDTO;
 import com.crisd.comet.model.Post;
 import com.crisd.comet.model.enums.PostState;
