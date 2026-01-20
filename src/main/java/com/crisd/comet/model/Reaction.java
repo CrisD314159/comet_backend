@@ -18,10 +18,8 @@ public class Reaction {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @ManyToOne
-    @JoinColumn(name = "post_id")
     private Post post;
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private User user;
 
 }

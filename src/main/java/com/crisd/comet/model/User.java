@@ -48,6 +48,6 @@ public class User  implements Serializable {
     private LocalDateTime lastModifiedAt;
     @Column
     private boolean createdWithGoogle;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> userPosts;
 }

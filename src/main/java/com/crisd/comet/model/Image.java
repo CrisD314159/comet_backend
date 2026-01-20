@@ -22,6 +22,5 @@ public class Image implements Serializable {
     private String id;
     private String url;
     @ManyToOne
-    @JoinColumn(name = "post_id")
     private Post post;
 }
